@@ -82,7 +82,7 @@ jobs:
         working-directory: starter/frontend
         run: |
           docker build \
-            --build-arg REACT_APP_MOVIE_API_URL=http://localhost:5000 \
+            --build-arg REACT_APP_MOVIE_API_URL=http://a24003532d2a443c0b75ec15bf2d29c5-1637648199.us-east-1.elb.amazonaws.com \
             --tag 279901736919.dkr.ecr.us-east-1.amazonaws.com/frontend:${{ github.sha }} \
             .
 
@@ -120,3 +120,18 @@ jobs:
       - name: Deploy to Kubernetes
         run: |
           kubectl apply -k starter/frontend/k8s
+
+      - name: Verify Kubernetes deployment
+        run: |
+          kubectl rollout status deployment/frontend
+          echo "----- Kubernetes Resources -----"
+          kubectl get all
+          echo "----- Frontend Deployment -----"
+          kubectl describe deploy frontend
+
+      - name: Verify Frontend ECR image
+        run: |
+          echo "----- Frontend ECR Images -----"
+          AWS_PAGER="" aws ecr describe-images \
+            --repository-name frontend \
+            --region us-east-1

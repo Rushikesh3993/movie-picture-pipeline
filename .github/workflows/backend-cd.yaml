@@ -121,3 +121,18 @@ jobs:
       - name: Deploy to Kubernetes
         run: |
           kubectl apply -k starter/backend/k8s
+
+      - name: Verify Kubernetes deployment
+        run: |
+          kubectl rollout status deployment/backend
+          echo "----- Logging - kubectl get all -----"
+          kubectl get all
+          echo "----- Logging - kubectl describe deploy backend -----"
+          kubectl describe deploy backend
+
+      - name: Verify Backend ECR image
+        run: |
+          echo "----- Logging - Backend ECR Image -----"
+          AWS_PAGER="" aws ecr describe-images \
+            --repository-name backend \
+            --image-ids imageTag=${{ github.sha }}
