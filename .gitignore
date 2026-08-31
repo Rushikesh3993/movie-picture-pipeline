@@ -1,2 +1,10 @@
+# Terraform
+.terraform/
+*.tfstate
+*.tfstate.*
+*.tfplan
+tfplan
+plan.txt
+
 # AWS temporary credentials
 .github/workflows/aws-token.txt
